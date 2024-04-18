@@ -172,7 +172,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
           <img src="{{asset('dist/img/mohamedabdallahimg.jpg')}}" class="img-circle elevation-2" alt="User Image">
         </div>
         <div class="info">
-          <a href="#" class="d-block">Mohamed Abdallah</a>
+          <a href="#" class="d-block">{{  Auth::user()->name}}</a>
         </div>
       </div>
 
@@ -204,8 +204,13 @@ scratch. This page gets rid of all links and provides the needed markup only.
           <div class="col-sm-6">
             <ol class="breadcrumb float-sm-right">
               @section('breadcrumb')    
+
               <li class="breadcrumb-item"><a href="#">Home</a></li>
               @show
+              <form action="{{route('logout')}}" method="post">
+                @csrf
+                <button  type="submit" class=" btn btn-sm btn btn-danger">&nbsp logout</button>  
+              </form>
             </ol>
           </div><!-- /.col -->
         </div><!-- /.row -->
