@@ -18,7 +18,8 @@ return new class extends Migration
             $table->string('slug')->unique();
             $table->text('description')->nullable();
             $table->string('image')->nullable();
-            $table->enum('status',['active','inactive'])->default('active');
+            $table->enum('status',['active','archived']);
+            $table->softDeletes();
             $table->timestamps();
         });
     }

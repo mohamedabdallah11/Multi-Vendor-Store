@@ -6,13 +6,14 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Category;
 use Illuminate\Support\Str;
+
 class CategoriesController extends Controller
 {
     /**
      * Display a listing of the resource.
      */
     public function index()
-    {   
+    {
         $categories = Category::all();
         $categories->first();
         return view('dashboard.categories.index', compact('categories'));
@@ -24,9 +25,8 @@ class CategoriesController extends Controller
     public function create()
     {
 
-        $parentCategories=Category::all();
-        return view('dashboard.categories.create',compact('parentCategories'));
-
+        $parentCategories = Category::all();
+        return view('dashboard.categories.create', compact('parentCategories'));
     }
 
     /**
@@ -40,11 +40,14 @@ class CategoriesController extends Controller
             'parent_id' => $request->parent_id,
             'description' => $request->Description,
             'image' => $request->image,
-            'slug'=>Str::slug($request->name), 
+            'slug' => Str::slug($request->name),
             'status' => $request->status
         ]);
-
-        return redirect()->route('categories.index')->with('sucsess', 'Category created successfully.');
+        /*       $request->merge(
+            ['slug'=>Str::slug($request->post('name'))]);
+    
+        $Category=Category::create($request->all()); */
+        return redirect()->route('dashboard.categories.index')->with('sucsess', 'Category created successfully.');
     }
 
     /**
@@ -52,7 +55,7 @@ class CategoriesController extends Controller
      */
     public function show(string $id)
     {
-        //
+        
     }
 
     /**
@@ -60,7 +63,16 @@ class CategoriesController extends Controller
      */
     public function edit(string $id)
     {
-        //
+        $category = Category::findOrFail($id);
+        $parentCategories = Category::where('id', '<>', $id)
+        ->where(function($query) use($id)
+        {
+            $query->whereNull('parent_id')
+            ->orWhere('parent_id','<>',$id);
+        })
+       
+        ->get();
+        return view('dashboard.categories.edit', compact('category', 'parentCategories'));
     }
 
     /**
@@ -68,7 +80,17 @@ class CategoriesController extends Controller
      */
     public function update(Request $request, string $id)
     {
-        //
+        $category = Category::find($id);
+        $category->update([
+            'name' => $request->name,
+            'parent_id' => $request->parent_id,
+            'description' => $request->Description,
+            'image' => $request->image,
+            'slug' => Str::slug($request->name),
+            'status' => $request->status
+
+        ]);
+        return redirect()->route('dashboard.categories.index')->with('sucsess', 'Category updated successfully.');
     }
 
     /**
@@ -76,6 +98,7 @@ class CategoriesController extends Controller
      */
     public function destroy(string $id)
     {
-        //
+        Category::destroy($id);
+        return redirect()->route('dashboard.categories.index')->with('sucsess', 'Category deleted successfully.');
     }
 }
