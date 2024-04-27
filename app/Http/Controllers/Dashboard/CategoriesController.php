@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Dashboard;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Category;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 
 class CategoriesController extends Controller
@@ -24,9 +25,9 @@ class CategoriesController extends Controller
      */
     public function create()
     {
-
+        $category = new Category();
         $parentCategories = Category::all();
-        return view('dashboard.categories.create', compact('parentCategories'));
+        return view('dashboard.categories.create', compact('category', 'parentCategories'));
     }
 
     /**
@@ -34,19 +35,29 @@ class CategoriesController extends Controller
      */
     public function store(Request $request)
     {
-
+        /*  if ($request->hasFile('image')) {
+            $file = $request->file('image');
+            $path = $file->store('uploads', ['disk' => 'public']);
+        }
         Category::create([
             'name' => $request->name,
             'parent_id' => $request->parent_id,
             'description' => $request->Description,
-            'image' => $request->image,
+            'image' => $request->hasFile('image')? $path: null,    
             'slug' => Str::slug($request->name),
-            'status' => $request->status
-        ]);
-        /*       $request->merge(
-            ['slug'=>Str::slug($request->post('name'))]);
-    
-        $Category=Category::create($request->all()); */
+            'status' => $request->status ]);
+        return redirect()->route('dashboard.categories.index')->with('sucsess', 'Category created successfully.');*/
+
+
+        $request->merge(
+            ['slug' => Str::slug($request->post('name'))]
+        );
+        $data = $request->except('image');
+
+        $data['image'] = $this->uploadImage($request);
+
+        $Category = Category::create($data);
+
         return redirect()->route('dashboard.categories.index')->with('sucsess', 'Category created successfully.');
     }
 
@@ -55,7 +66,6 @@ class CategoriesController extends Controller
      */
     public function show(string $id)
     {
-        
     }
 
     /**
@@ -65,13 +75,12 @@ class CategoriesController extends Controller
     {
         $category = Category::findOrFail($id);
         $parentCategories = Category::where('id', '<>', $id)
-        ->where(function($query) use($id)
-        {
-            $query->whereNull('parent_id')
-            ->orWhere('parent_id','<>',$id);
-        })
-       
-        ->get();
+            ->where(function ($query) use ($id) {
+                $query->whereNull('parent_id')
+                    ->orWhere('parent_id', '<>', $id);
+            })
+
+            ->get();
         return view('dashboard.categories.edit', compact('category', 'parentCategories'));
     }
 
@@ -80,16 +89,27 @@ class CategoriesController extends Controller
      */
     public function update(Request $request, string $id)
     {
-        $category = Category::find($id);
+
+        $category = Category::findOrFail($id);
+        $oldImage = $category->image;
+        $data = $request->except('image');
+
+        $data['image'] = $this->upleadImage($request);
+
+        /* 
         $category->update([
             'name' => $request->name,
             'parent_id' => $request->parent_id,
             'description' => $request->Description,
-            'image' => $request->image,
+            'image' => $request->$path,
             'slug' => Str::slug($request->name),
             'status' => $request->status
 
-        ]);
+        ]); */
+        $category->update($data);
+        if ($oldImage && isset($data['image'])) {
+            Storage::disk('public')->delete($oldImage);
+        }
         return redirect()->route('dashboard.categories.index')->with('sucsess', 'Category updated successfully.');
     }
 
@@ -98,7 +118,27 @@ class CategoriesController extends Controller
      */
     public function destroy(string $id)
     {
-        Category::destroy($id);
+        //  Category::destroy($id);
+        $category = Category::findOrFail($id);
+        $category->delete();
+        if ($category->image) {
+            Storage::disk('public')->delete($category->image);
+        }
         return redirect()->route('dashboard.categories.index')->with('sucsess', 'Category deleted successfully.');
+    }
+    public function deleteAllCategories()
+    {
+        Category::truncate();
+        Storage::disk('public')->deleteDirectory('uploads');
+        return redirect()->route('dashboard.categories.index');
+    }
+    protected function uploadImage(Request $request)
+    {
+        if (!$request->hasFile('image'))
+            return;
+
+        $file = $request->file('image');
+        $path = $file->store('uploads', ['disk' => 'public']);
+        return $path;
     }
 }

@@ -3,7 +3,7 @@
 use App\Http\Controllers\Dashboard\CategoriesController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Dashboard\DashboardController;
-
+use App\Models\Category;
 
 
 Route::group([
@@ -14,4 +14,7 @@ Route::group([
 
     Route::get('/', [DashboardController::class, 'index']);
     Route::resource('categories', CategoriesController::class);
+  
 });
+Route::delete('categories/deleteAll',[CategoriesController::class,'deleteAllCategories'])
+->name('categories.deleteAll');
