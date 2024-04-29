@@ -3,10 +3,13 @@
 namespace App\Http\Controllers\Dashboard;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\CategoryRequest;
 use Illuminate\Http\Request;
 use App\Models\Category;
+use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
+
 
 class CategoriesController extends Controller
 {
@@ -25,6 +28,7 @@ class CategoriesController extends Controller
      */
     public function create()
     {
+
         $category = new Category();
         $parentCategories = Category::all();
         return view('dashboard.categories.create', compact('category', 'parentCategories'));
@@ -47,7 +51,9 @@ class CategoriesController extends Controller
             'slug' => Str::slug($request->name),
             'status' => $request->status ]);
         return redirect()->route('dashboard.categories.index')->with('sucsess', 'Category created successfully.');*/
-
+         $request->validate(Category::rules(),[
+            'name.required' => 'Category [:attribute ]is required',
+         ]);
 
         $request->merge(
             ['slug' => Str::slug($request->post('name'))]
@@ -87,15 +93,18 @@ class CategoriesController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, string $id)
+    public function update(CategoryRequest $categoryRequest, string $id)
     {
-
+      //  $request->validate(Category::rules($id)); now the category request is returned back and work without calling 
+        
         $category = Category::findOrFail($id);
-        $oldImage = $category->image;
-        $data = $request->except('image');
+        $oldImage = $categoryRequest->image;
+        $data = $categoryRequest->except('image');
 
-        $data['image'] = $this->upleadImage($request);
-
+        $newimage = $this->uploadImage($categoryRequest);
+        if($newimage){
+            $data['image']=$newimage;
+        }
         /* 
         $category->update([
             'name' => $request->name,
@@ -107,7 +116,7 @@ class CategoriesController extends Controller
 
         ]); */
         $category->update($data);
-        if ($oldImage && isset($data['image'])) {
+        if ($oldImage && $newimage) {
             Storage::disk('public')->delete($oldImage);
         }
         return redirect()->route('dashboard.categories.index')->with('sucsess', 'Category updated successfully.');

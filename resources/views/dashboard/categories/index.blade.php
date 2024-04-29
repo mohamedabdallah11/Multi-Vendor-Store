@@ -29,30 +29,8 @@
                     <form action="{{route('categories.deleteAll') }}" method="post">
                         @csrf
                         @method('DELETE')
-                        <button type="button" class="btn btn-sm btn-outline-danger" data-toggle="modal"
-                        data-target="#confirmDeleteModal0">DeleteAll</button>
-                </form>
-                <div class="modal fade" id="confirmDeleteModal0" tabindex="-1" role="dialog"
-                    aria-labelledby="confirmDeleteModalLabel0" aria-hidden="true">
-                    <div class="modal-dialog" role="document">
-                        <div class="modal-content">
-                            <div class="modal-header">
-                                <h5 class="modal-title" id="confirmDeleteModalLabel0"></h5>
-                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                    <span aria-hidden="true">&times;</span>
-                                </button>
-                            </div>
-                            <div class="modal-body">
-                                Are you sure you want to Delete All categories?
-                            </div>
-                            <div class="modal-footer">
-                                <button type="button" class="btn btn-secondary"
-                                    data-dismiss="modal">Cancel</button>
-                                <button type="submit" form="deleteForm" class="btn btn-danger">DeleteAll</button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+                        <button type="submit"  class="btn-btn-sm btn-outline-danger">DeleteAll</button>
+                    </form>
                 </th>
                 <th></th>
             </tr>

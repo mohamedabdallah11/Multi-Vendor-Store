@@ -13,6 +13,7 @@ Route::group([
 ], function () {
 
     Route::get('/', [DashboardController::class, 'index']);
+    
     Route::resource('categories', CategoriesController::class);
   
 });

@@ -1,20 +1,32 @@
+@if ($errors->any())
+<div>
+   <h1>Error</h1>
+   <ul >
+    @foreach ($errors->all() as $error)
+    <li class="text-danger" >
+        {{ $error }}
+    </li>
+    @endforeach
+   </ul>
+</div>
+@endif
 <div class="form-group">
     <label for="">CategoryName</label>
-    <input type="text" name ="name" class="form-control" value="{{ $category->name }}">
+    <input type="text" name ="name" class="form-control @error ('name') is-invalid @enderror" value ="{{ old('name',$category->name)}}"  >  
 </div>
-<div class="form-group">
-    <label for="">parentCategory</label>
-    <select name ="parent_id" class="form-control form-select">
+<div class="form-group">    
+    <label for="">parentCategory</label>   
+    <select name ="parent_id" class="form-control form-select @error ('parent_id') is-invalid @enderror" >
         <option value="">PrimaryCateogry </option>
         @foreach ($parentCategories as $parentCategory)
-            <option value="{{ $parentCategory->id }}"@selected($parentCategory->id==$category->parent_id)>{{ $parentCategory->name }}</option>
+            <option value="{{ $parentCategory->id }}" @selected(old('parent_id',$parentCategory->id == $category->parent_id ?$category->parent_id:null)) >{{ $parentCategory->name }}</option>
         @endforeach
-    </select>
+    </select>   
 </div>
 
 <div class="form-group">
     <label for="">Description</label>
-    <textarea type="text" name ="description" class="form-control">{{ $category->description }}</textarea>
+    <textarea type="text" name ="description" class="form-control">{{ old('description', $category->description)}}</textarea>
 </div>
 <div class="form-group">
     <label for="">Image</label>
@@ -27,7 +39,7 @@
 <div class="form-group">
     <label for="status">status</label>  
     <div class="form-check">
-        <input class="form-check-input" type="radio"  name="status" value="active" @checked($category->status=='active')
+        <input class="form-check-input" type="radio"  name="status" value="active" @checked(old('status', $category->status) == 'active')
             
         >
         <label class="form-check-label" >
@@ -35,7 +47,7 @@
         </label>
     </div>
     <div class="form-check">
-        <input class="form-check-input" type="radio"  name="status" value="archived" @checked($category->status=='archived')
+        <input class="form-check-input" type="radio"  name="status" value="archived" @checked(old('status', $category->status) == 'archived')
             
         >
         <label class="form-check-label" >
