@@ -12,11 +12,11 @@
     <div class="mb-5">
         <a href="{{ route('dashboard.categories.create') }}" class="btn btn-sm btn-outline-primary">CREATE</a>
     </div>
-    @if (session()->has('sucsess'))
-        <div class="alert alert-success">
-            {{ session('sucsess') }}
-        </div>
-    @endif
+
+
+   <x-alerts/>    {{-- component --}}
+
+
     <table class="table">
         <thead>
             <tr>
@@ -29,7 +29,7 @@
                     <form action="{{route('categories.deleteAll') }}" method="post">
                         @csrf
                         @method('DELETE')
-                        <button type="submit"  class="btn-btn-sm btn-outline-danger">DeleteAll</button>
+                        <button  class="btn-btn-sm btn-outline-danger">DeleteAll</button>
                     </form>
                 </th>
                 <th></th>
