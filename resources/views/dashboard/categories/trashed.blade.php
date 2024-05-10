@@ -1,18 +1,14 @@
 @extends('layouts.dashboards')
 
 
-@section('title', 'Categories')
+@section('title', 'Trashed')
 @section('breadcrumb')
     @parent
     <li class="breadcrumb-item active">Categories</li>
 @endsection
 
-@section('content')
-
-    <div class="mb-5">
-        <a href="{{ route('dashboard.categories.create') }}" class="btn btn-dark mx-2 ">CREATE</a>
-        <a href="{{ route('dashboard.categories.trash') }}" class="btn btn-dark ">Trashed</a>
-    </div>
+@section('content') 
+<a href="{{ route('dashboard.categories.index') }}" class="btn btn-dark mx-2 ">Back</a>
 
 
     <x-alerts /> {{-- component --}}
@@ -35,7 +31,7 @@
                 <th>Parent</th>
                 <th>status</th>
                 <th>Image</th>
-                <th>Created At</th>
+                <th>deleted At</th>
                 <th>
                     <form action="{{ route('categories.deleteAll') }}" method="post">
                         @csrf
@@ -63,14 +59,17 @@
                         </td>
 
 
-                        <td>{{ $category->created_at }}</td>
+                        <td>{{ $category->deleted_at }}</td>
 
                         <td>
-                            <a href="{{ route('dashboard.categories.edit', $category->id) }}"
-                                class="btn-btn-sm btn-outline-success">EDIT</a>
+                            <form action="{{route('dashboard.categories.restore', $category->id)}}" method="post">
+                                @csrf
+                                @method('PUT')
+                                <button type="submit" class="btn btn-sm btn-outline-success">Restore</button>
+                            </form>
                         </td>
                         <td>
-              {{--               <form action="{{ route('dashboard.categories.destroy', $category->id) }}" method="post"
+                       {{--      <form action="{{route('dashboard.categories.forceDelete', $category->id) }}" method="post"
                                 id="deleteForm">
                                 @csrf
                                 @method('DELETE')
@@ -93,19 +92,17 @@
                                         <div class="modal-footer">
                                             <button type="button" class="btn btn-secondary"
                                                 data-dismiss="modal">Cancel</button>
-                                            <button type="submit" form="deleteForm" class="btn btn-danger">Delete</button>
+                                            <button type="submit" form="deleteForm" class="btn btn-danger">forceDelete</button>
                                         </div>
                                     </div>
                                 </div>
-                            </div>
-                      --}} 
-                      <form action="{{ route('dashboard.categories.destroy', $category->id) }}" method="post">
-                    @csrf
-                    @method('DELETE')
-                    <button type="submit" class="btn btn-sm btn-outline-danger">DELETE</button>
-                    </form>
-                    
-                    </td> 
+                            </div> --}}
+                            <form action="{{ route('dashboard.categories.forceDelete', $category->id) }}" method="post">
+                                @csrf
+                                @method('DELETE')
+                                <button type="submit" class="btn btn-sm btn-outline-danger">forceDelete</button>
+                                </form>
+                        </td>
                     </tr>
                 @endforeach
             @else
