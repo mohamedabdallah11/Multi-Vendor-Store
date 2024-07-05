@@ -39,6 +39,10 @@ scratch. This page gets rid of all links and provides the needed markup only.
                     <a href="{{ route('dashboard.categories.index') }}" class="nav-link">Categories</a>
 
                 </li>
+                <li class="nav-item d-none d-sm-inline-block">
+                    <a href="{{ route('dashboard.products.index') }}" class="nav-link">Products</a>
+
+                </li>
             </ul>
 
             <!-- Right navbar links -->
@@ -184,7 +188,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
                         <img src="" class="img-circle elevation-2" alt="User Image">
                     </div>
                     <div class="info">
-                        <a href="#" class="d-block">{{-- {{Auth::user()->name}} --}}</a>
+                        <a href="{{ route('dashboard.profile.edit') }}" class="d-block">{{Auth::user()->name}}</a>
                     </div>
                 </div>
 

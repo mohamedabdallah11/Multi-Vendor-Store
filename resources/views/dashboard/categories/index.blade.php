@@ -33,6 +33,7 @@
                 <th>ID</th>
                 <th>Name</th>
                 <th>Parent</th>
+                <th>Product #</th>
                 <th>status</th>
                 <th>Image</th>
                 <th>Created At</th>
@@ -44,15 +45,16 @@
                     </form>
                 </th>
                 <th></th>
-            </tr>
+            </tr> 
         </thead>
         <tbody>
             @if ($categories->count() > 0)
                 @foreach ($categories as $category)
                     <tr>
                         <td>{{ $category->id }}</td>
-                        <td>{{ $category->name }}</td>
+                        <td><a href="{{ route('dashboard.categories.show', $category->id) }}">{{ $category->name }}</a></td>
                         <td>{{ $category->parent_name }}</td>
+                        <td>{{ $category->products->count() }}</td>
                         <td>{{ $category->status }}</td>
 
                         <td>
@@ -109,7 +111,7 @@
                     </tr>
                 @endforeach
             @else
-                <td colspan="7">No Categories Found</td>
+                <td colspan="9">No Categories Found</td>
             @endif
 
         </tbody>

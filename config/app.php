@@ -70,6 +70,8 @@ return [
     */
 
     'timezone' => 'UTC',
+    //cuurenct 
+    'currency' => 'USD',
 
     /*
     |--------------------------------------------------------------------------
@@ -209,7 +211,7 @@ return [
     */
 
     'aliases' => Facade::defaultAliases()->merge([
-        // 'ExampleClass' => App\Example\ExampleClass::class,
+        'Currency' => App\Helpers\Currency::class,
     ])->toArray(),
 
 ];
