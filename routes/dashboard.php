@@ -6,10 +6,10 @@ use App\Http\Controllers\Dashboard\DashboardController;
 use App\Http\Controllers\Dashboard\ProductsController;
 use App\Http\Controllers\Dashboard\ProfileController;
 use App\Models\Category;
-
+use App\Http\Middleware\CheckUserType;
 
 Route::group([
-    'middleware' => ['auth'],
+    'middleware' => ['auth',"auth.type:admin,super-admin"],
     'as' => 'dashboard.',
     'prefix' => 'dashboard',
 ], function () {
