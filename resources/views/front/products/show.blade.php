@@ -50,6 +50,10 @@
                                     {{ $Product->category->name }}</a></p>
                             <h3 class="price">{{ Currency::format($Product->price) }} @if ($Product->compare_price) <span>{{Currency::format( $Product->compare_price) }}</span>@endif </h3> 
                             <p class="info-text"> {{ $Product->description }}</p>
+                            <form class="row" method= "POST" action="{{ route('cart.store') }}">
+                                @csrf
+                                <input type="hidden" name="product_id" value="{{ $Product->id }}">
+
                             <div class="row">
                                 <div class="col-lg-4 col-md-4 col-12">
                                     <div class="form-group color-option">
@@ -85,7 +89,7 @@
                                 <div class="col-lg-4 col-md-4 col-12">
                                     <div class="form-group quantity">
                                         <label for="color">Quantity</label>
-                                        <select class="form-control">
+                                        <select class="form-control" name ="quantity" >
                                             <option>1</option>
                                             <option>2</option>
                                             <option>3</option>
@@ -99,7 +103,7 @@
                                 <div class="row align-items-end">
                                     <div class="col-lg-4 col-md-4 col-12">
                                         <div class="button cart-button">
-                                            <button class="btn" style="width: 100%;">Add to Cart</button>
+                                            <button class="btn" type="submit" style="width: 100%;">Add to Cart</button>
                                         </div>
                                     </div>
                                     <div class="col-lg-4 col-md-4 col-12">
@@ -114,6 +118,7 @@
                                     </div>
                                 </div>
                             </div>
+                            </form>
                         </div>
                     </div>
                 </div>
